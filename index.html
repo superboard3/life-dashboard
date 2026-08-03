@@ -187,7 +187,7 @@
         
         /* Two col sub-grid */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;}
-        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+        
     </style>
 </head>
 <body>
@@ -221,7 +221,7 @@
         <!-- LEFT COLUMN -->
         <div class="left-col">
             
-            <!-- CURRENT VIBE ALBUM -->
+            <!-- CURRENT VIBE ALBUM (REPLACED SPOTIFY PLAYLIST) -->
             <div class="card" style="padding: 15px; border-left: 3px solid var(--accent-birch);">
                 <div style="display: flex; gap: 15px; align-items: center;">
                     <img id="albumCover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300" alt="Album Cover" style="width: 85px; height: 85px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color);">
@@ -241,7 +241,7 @@
                 </div>
             </div>
 
-            <!-- BRAIN DUMP -->
+            <!-- RESTORED BRAIN DUMP -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">💡 Brain Dump</div>
@@ -336,20 +336,21 @@
             <div class="modal-quote">"Wherever you are right now, you’re just taking a break." — Suga (D-2)</div>
             
             <h3>Personal & Creative Vision</h3>
-            <textarea id="visionInput" placeholder="Where do you see your creative self evolving this year?" onchange="saveModalText('visionInput')"></textarea>
+            <textarea placeholder="Where do you see your creative self evolving this year?"></textarea>
 
             <h3>Health & Space</h3>
-            <textarea id="spaceInput" placeholder="Desired environment, studio setups, wellness targets..." onchange="saveModalText('spaceInput')"></textarea>
+            <textarea placeholder="Desired environment, studio setups, wellness targets..."></textarea>
         </div>
     </div>
 
-    <!-- LONG-TERM GOAL PLANNER -->
+    <!-- UPGRADED LONG-TERM GOAL PLANNER -->
     <div class="modal-overlay" id="modal-long-term">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-long-term')">✕</button>
             <h2>🔭 Long-Term Goal Planner</h2>
             <div class="modal-quote">"Future’s gonna be okay." — Agust D (D-DAY)</div>
             
+            <!-- ADD NEW PROJECT SECTION -->
             <div style="background: var(--bg-obsidian); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
                 <h3 style="color: var(--accent-moss); margin-bottom: 10px;">Add New Long-Term Project</h3>
                 <div style="display: flex; gap: 10px;">
@@ -364,7 +365,7 @@
         </div>
     </div>
 
-    <!-- QURAN TRACKER -->
+    <!-- UPGRADED QURAN TRACKER -->
     <div class="modal-overlay" id="modal-quran">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-quran')">✕</button>
@@ -380,7 +381,13 @@
                         <button class="btn" onclick="addSurah()">Add</button>
                     </div>
                     <div id="surahList">
-                        <!-- Dynamic Surah items -->
+                        <!-- Example items -->
+                        <div class="quran-item needs-review" style="display: flex; justify-content: space-between; align-items: center;"><span>Al-Kahf</span> 
+                            <label><input type="checkbox" checked onchange="toggleReview(this)"> Needs Review</label>
+                        </div>
+                        <div class="quran-item" style="display: flex; justify-content: space-between; align-items: center;"><span>Juz Amma (30)</span> 
+                            <label><input type="checkbox" onchange="toggleReview(this)"> Needs Review</label>
+                        </div>
                     </div>
                 </div>
 
@@ -397,7 +404,7 @@
         </div>
     </div>
 
-    <!-- ACADEMICS -->
+    <!-- UPGRADED ACADEMICS -->
     <div class="modal-overlay" id="modal-academics">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-academics')">✕</button>
@@ -407,22 +414,22 @@
             <div class="two-col">
                 <div>
                     <h3 style="color: var(--accent-moss);">Current Classes (This Semester)</h3>
-                    <textarea id="classesInput" placeholder="List current classes, schedules, and syllabus links here..." style="min-height: 120px;" onchange="saveModalText('classesInput')"></textarea>
+                    <textarea placeholder="List current classes, schedules, and syllabus links here..." style="min-height: 120px;"></textarea>
 
                     <h3 style="color: var(--accent-ember); margin-top: 20px;">Active Assignments</h3>
-                    <textarea id="assignmentsInput" placeholder="Upcoming deadlines, papers, exams..." style="min-height: 120px;" onchange="saveModalText('assignmentsInput')"></textarea>
+                    <textarea placeholder="Upcoming deadlines, papers, exams..." style="min-height: 120px;"></textarea>
                 </div>
                 
                 <div style="background: var(--bg-obsidian); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
                     <h3>📚 Course History & Archive</h3>
                     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Log classes you've already taken and grades achieved.</p>
-                    <textarea id="historyInput" placeholder="e.g. Intro to Psych - A&#10;World History - B+" style="min-height: 250px;" onchange="saveModalText('historyInput')"></textarea>
+                    <textarea placeholder="e.g. Intro to Psych - A&#10;World History - B+" style="min-height: 250px;"></textarea>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- WORKOUT GENERATOR & TRACKER -->
+    <!-- UPGRADED WORKOUT GENERATOR & TRACKER -->
     <div class="modal-overlay" id="modal-workout">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-workout')">✕</button>
@@ -430,6 +437,7 @@
             <div class="modal-quote">"Clear water gets dirty if it stagnates; keep moving." — Arab Proverb</div>
 
             <div class="two-col">
+                <!-- GENERATOR COLUMN -->
                 <div>
                     <h3 style="color: var(--accent-moss); margin-bottom: 10px;">Daily Workout Generator</h3>
                     <label style="font-size: 0.85rem; color: var(--text-muted);">Select Training Goal:</label>
@@ -447,6 +455,7 @@
                     </div>
                 </div>
 
+                <!-- HISTORY LOG COLUMN -->
                 <div style="background: var(--bg-obsidian); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
                     <h3 style="color: var(--accent-birch); margin-bottom: 10px;">Workout History Log</h3>
                     <div style="display: flex; gap: 8px; margin-bottom: 12px;">
@@ -461,7 +470,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC & LOCAL STORAGE -->
+    <!-- JAVASCRIPT FOR LOGIC & LOCAL STORAGE -->
     <script>
         // --- QUOTES POOL ---
         const quotesPool = [
@@ -484,7 +493,7 @@
         function handleLogin(e) { if(e.key === 'Enter') checkLogin(); }
         function checkLogin() {
             const pin = document.getElementById('passcodeInput').value;
-            if (pin === '0000' || pin === '') {
+            if (pin === '0000' || pin === '') { // Default PIN: 0000
                 document.getElementById('loginOverlay').style.opacity = '0';
                 setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 500);
             } else {
@@ -525,25 +534,9 @@
             toggleAlbumEdit();
         }
 
-        // --- MODAL LOGIC & PERSISTENT TEXTAREAS ---
+        // --- MODAL LOGIC ---
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function saveModalText(id) {
-            const val = document.getElementById(id).value;
-            localStorage.setItem(`modalText_${id}`, val);
-        }
-
-        function loadModalTexts() {
-            const ids = ['visionInput', 'spaceInput', 'classesInput', 'assignmentsInput', 'historyInput'];
-            ids.forEach(id => {
-                const saved = localStorage.getItem(`modalText_${id}`);
-                if (saved !== null) {
-                    const el = document.getElementById(id);
-                    if (el) el.value = saved;
-                }
-            });
-        }
 
         // --- BRAIN DUMP ---
         let brainDumps = JSON.parse(localStorage.getItem('myBrainDumps')) || [];
@@ -552,8 +545,7 @@
             const list = document.getElementById('dumpList');
             list.innerHTML = '';
             brainDumps.forEach((text, index) => {
-                list.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding: 4px 0;">
+                list.innerHTML += `<div style="display:flex; justify-space-between; border-bottom: 1px solid var(--border-color); padding: 4px 0;">
                     <span>• ${text}</span>
                     <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteDump(${index})">✕</button>
                 </div>`;
@@ -634,8 +626,8 @@
                 let goalsHtml = '';
                 proj.goals.forEach((g, gIndex) => {
                     goalsHtml += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 6px 10px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color);">
-                        <label style="font-size: 0.85rem; text-decoration: ${g.done ? 'line-through' : 'none'}; color: ${g.done ? 'var(--text-muted)' : 'var(--text-main)'}; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 6px 10px; border-radius: 4px; margin-top: 6px;">
+                        <label style="font-size: 0.85rem; text-decoration: ${g.done ? 'line-through' : 'none'}; color: ${g.done ? 'var(--text-muted)' : 'var(--text-main)'}">
                             <input type="checkbox" ${g.done ? 'checked' : ''} onchange="toggleGoalDone(${pIndex}, ${gIndex})">
                             <span style="font-size:0.75rem; color: var(--accent-birch); font-weight: bold; margin-left: 5px;">[${g.type.toUpperCase()}]</span> ${g.text}
                         </label>
@@ -647,264 +639,15 @@
                 <div class="project-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h3 style="color: var(--accent-moss);">${proj.title}</h3>
-                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer; font-weight:bold; font-size: 0.8rem;" onclick="deleteProject(${pIndex})">Delete Project ✕</button>
+                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer; font-weight:bold;" onclick="deleteProject(${pIndex})">Delete Project ✕</button>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 120px 1fr 80px; gap: 8px; margin-bottom: 10px;">
                         <select id="goalType_${pIndex}" style="margin-bottom:0;">
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly Goal</option>
+                            <option value="monthly">Monthly Goal</option>
                         </select>
                         <input type="text" id="goalInput_${pIndex}" placeholder="Add goal or milestone step..." style="margin-bottom:0;">
-                        <button class="btn" onclick="addGoal(${pIndex})">Add</button>
-                    </div>
-                    <div>${goalsHtml}</div>
-                </div>`;
-            });
-        }
-
-        function addProject() {
-            const titleInput = document.getElementById('newProjectTitle');
-            const title = titleInput.value.trim();
-            if (!title) return;
-            projects.push({ id: Date.now(), title: title, goals: [] });
-            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
-            titleInput.value = '';
-            renderProjects();
-        }
-
-        function deleteProject(pIndex) {
-            projects.splice(pIndex, 1);
-            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
-            renderProjects();
-        }
-
-        function addGoal(pIndex) {
-            const typeSelect = document.getElementById(`goalType_${pIndex}`);
-            const textInput = document.getElementById(`goalInput_${pIndex}`);
-            const text = textInput.value.trim();
-            if (!text) return;
-
-            projects[pIndex].goals.push({
-                id: Date.now(),
-                type: typeSelect.value,
-                text: text,
-                done: false
-            });
-            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
-            textInput.value = '';
-            renderProjects();
-        }
-
-        function toggleGoalDone(pIndex, gIndex) {
-            projects[pIndex].goals[gIndex].done = !projects[pIndex].goals[gIndex].done;
-            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
-            renderProjects();
-        }
-
-        function deleteGoal(pIndex, gIndex) {
-            projects[pIndex].goals.splice(gIndex, 1);
-            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
-            renderProjects();
-        }
-
-        // --- QURAN TRACKER ---
-        let surahs = JSON.parse(localStorage.getItem('mySurahs')) || [
-            { name: 'Al-Kahf', needsReview: true },
-            { name: 'Juz Amma (30)', needsReview: false }
-        ];
-
-        function renderSurahs() {
-            const list = document.getElementById('surahList');
-            if(!list) return;
-            list.innerHTML = '';
-            surahs.forEach((s, idx) => {
-                list.innerHTML += `
-                <div class="quran-item ${s.needsReview ? 'needs-review' : ''}" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>${s.name}</span>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <label style="font-size: 0.8rem; cursor: pointer;">
-                            <input type="checkbox" ${s.needsReview ? 'checked' : ''} onchange="toggleSurahReview(${idx})"> Needs Review
-                        </label>
-                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteSurah(${idx})">✕</button>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function addSurah() {
-            const input = document.getElementById('surahInput');
-            const name = input.value.trim();
-            if(!name) return;
-            surahs.push({ name: name, needsReview: true });
-            localStorage.setItem('mySurahs', JSON.stringify(surahs));
-            input.value = '';
-            renderSurahs();
-        }
-
-        function toggleSurahReview(idx) {
-            surahs[idx].needsReview = !surahs[idx].needsReview;
-            localStorage.setItem('mySurahs', JSON.stringify(surahs));
-            renderSurahs();
-        }
-
-        function deleteSurah(idx) {
-            surahs.splice(idx, 1);
-            localStorage.setItem('mySurahs', JSON.stringify(surahs));
-            renderSurahs();
-        }
-
-        function generateReview() {
-            const reviewNeeded = surahs.filter(s => s.needsReview);
-            const output = document.getElementById('generatedReview');
-            if (reviewNeeded.length === 0) {
-                output.innerHTML = '✨ No Surahs currently marked for review!';
-                return;
-            }
-            const shuffled = [...reviewNeeded].sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 2).map(s => s.name);
-            output.innerHTML = `📖 Today's Review Assignment:<br><span style="color: var(--text-main); font-weight: normal; margin-top: 5px; display: inline-block;">• ${selected.join('<br>• ')}</span>`;
-        }
-
-        // --- WORKOUT GENERATOR & TRACKER ---
-        const workoutRoutines = {
-            calisthenics: [
-                "4 Sets x Max Push-ups",
-                "4 Sets x 12 Bodyweight Squats / Jump Squats",
-                "3 Sets x 10 Dips (Chair or Station)",
-                "3 Sets x 45-sec Plank Hold",
-                "3 Sets x 15 Leg Raises"
-            ],
-            dumbbell: [
-                "4 Sets x 10 Dumbbell Goblet Squats",
-                "4 Sets x 10 Dumbbell Shoulder Press",
-                "3 Sets x 12 Dumbbell Romanian Deadlifts",
-                "3 Sets x 12 Bent-Over Dumbbell Rows",
-                "3 Sets x 15 Bicep Curls to Hammer Curls"
-            ],
-            cardio: [
-                "5 Min Dynamic Warmup",
-                "4 Rounds: 40s Burpees, 20s Rest",
-                "4 Rounds: 40s Mountain Climbers, 20s Rest",
-                "4 Rounds: 40s High Knees, 20s Rest",
-                "10 Min Cooldown & Deep Stretching"
-            ],
-            hybrid: [
-                "3 Sets x 10 Dumbbell Thrusters",
-                "3 Sets x 12 Bodyweight Inverted Rows / Pull-ups",
-                "3 Sets x 15 Dumbbell Swings",
-                "3 Sets x 12 Walking Lunges (Weighted)",
-                "3 Sets x 1 Min Hollow Body Hold"
-            ]
-        };
-
-        let workoutLogs = JSON.parse(localStorage.getItem('myWorkoutLogs')) || [];
-
-        function generateDailyWorkout() {
-            const goal = document.getElementById('workoutGoalSelect').value;
-            const exercises = workoutRoutines[goal] || workoutRoutines.calisthenics;
-            const output = document.getElementById('workoutOutput');
-            output.innerHTML = `
-                <div style="background: var(--bg-obsidian); padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);">
-                    <h4 style="color: var(--accent-birch); margin-bottom: 8px; font-size: 0.95rem;">Generated Routine (${goal.toUpperCase()})</h4>
-                    <ul style="padding-left: 20px; font-size: 0.85rem; color: var(--text-main);">
-                        ${exercises.map(ex => `<li style="margin-bottom: 4px;">${ex}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-
-        function renderWorkoutLog() {
-            const container = document.getElementById('workoutHistoryList');
-            if(!container) return;
-            container.innerHTML = '';
-            workoutLogs.forEach((log, idx) => {
-                container.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:8px; border-radius:4px; margin-bottom:6px; border: 1px solid var(--border-color);">
-                        <div>
-                            <div style="font-size:0.75rem; color:var(--accent-moss);">${log.date}</div>
-                            <div>${log.text}</div>
-                        </div>
-                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteWorkoutLog(${idx})">✕</button>
-                    </div>
-                `;
-            });
-        }
-
-        function saveWorkoutLog() {
-            const input = document.getElementById('workoutLogInput');
-            const text = input.value.trim();
-            if(!text) return;
-            const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            workoutLogs.unshift({ date: today, text: text });
-            localStorage.setItem('myWorkoutLogs', JSON.stringify(workoutLogs));
-            input.value = '';
-            renderWorkoutLog();
-        }
-
-        function deleteWorkoutLog(idx) {
-            workoutLogs.splice(idx, 1);
-            localStorage.setItem('myWorkoutLogs', JSON.stringify(workoutLogs));
-            renderWorkoutLog();
-        }
-
-        // --- CALENDAR GENERATOR ---
-        let currentCalDate = new Date();
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            const monthYearText = document.getElementById('calMonthYear');
-            if(!grid || !monthYearText) return;
-
-            const year = currentCalDate.getFullYear();
-            const month = currentCalDate.getMonth();
-
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-            monthYearText.innerText = `${monthNames[month]} ${year}`;
-            grid.innerHTML = '';
-
-            daysOfWeek.forEach(day => {
-                grid.innerHTML += `<div class="cal-header">${day}</div>`;
-            });
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-
-            for (let i = 0; i < firstDay; i++) {
-                grid.innerHTML += `<div class="cal-cell empty"></div>`;
-            }
-
-            for (let day = 1; day <= totalDays; day++) {
-                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-                grid.innerHTML += `
-                    <div class="cal-cell ${isToday ? 'today' : ''}">
-                        <span class="cal-date">${day}</span>
-                    </div>
-                `;
-            }
-        }
-
-        function changeMonth(dir) {
-            currentCalDate.setMonth(currentCalDate.getMonth() + dir);
-            renderCalendar();
-        }
-
-        // --- INITIALIZATION ---
-        window.addEventListener('DOMContentLoaded', () => {
-            renderAlbumVibe();
-            renderDumps();
-            renderTasks();
-            renderProjects();
-            renderSurahs();
-            renderWorkoutLog();
-            renderCalendar();
-            loadModalTexts();
-    </script>
-</body>
-
                         <button class="btn" style="padding: 4px 8px; font-size: 0.85rem;" onclick="addGoalToProject(${pIndex})">+ Add</button>
                     </div>
                     
