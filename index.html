@@ -74,6 +74,11 @@
         }
 
         .banner h1 { font-size: 2.2rem; color: var(--text-main); }
+        .quote-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         .quote-badge-orange {
             background: rgba(184, 91, 58, 0.2);
             color: var(--accent-ember);
@@ -82,6 +87,8 @@
             border-radius: 20px;
             font-weight: 600;
             font-style: italic;
+            max-width: 550px;
+            text-align: right;
         }
 
         .dashboard-grid {
@@ -114,12 +121,12 @@
         .open-btn:hover { background: var(--accent-sage); color: var(--text-main); }
 
         /* --- INPUTS & BUTTONS --- */
-        input[type="text"], input[type="password"], input[type="time"], textarea {
+        input[type="text"], input[type="password"], input[type="time"], select, textarea {
             background: var(--bg-obsidian); border: 1px solid var(--border-color);
             color: var(--text-main); padding: 10px 12px; border-radius: 6px;
             width: 100%; margin-bottom: 10px; font-family: inherit;
         }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent-sage); }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-sage); }
 
         .btn {
             background-color: var(--accent-sage); color: var(--text-main);
@@ -171,10 +178,10 @@
         .cal-date { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
 
         /* --- TASKS & QURAN --- */
-        .task-card, .quran-item {
+        .task-card, .quran-item, .project-card, .workout-card {
             background: var(--bg-obsidian); border: 1px solid var(--border-color);
             border-left: 3px solid var(--accent-sage); padding: 12px;
-            border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+            border-radius: 6px; margin-bottom: 12px;
         }
         .quran-item.needs-review { border-left-color: var(--accent-ember); }
         
@@ -202,7 +209,10 @@
             <h1>Life Hub & Workspace</h1>
             <p>Ember & Moss Theme • Direct Execution & Deep Focus</p>
         </div>
-        <div class="quote-badge-orange">"Seven times down, eight times up."</div>
+        <div class="quote-container">
+            <div class="quote-badge-orange" id="headerQuote">"Seven times down, eight times up." — Proverb</div>
+            <button class="open-btn" onclick="cycleQuote()" title="Next Quote">New Quote ✦</button>
+        </div>
     </div>
 
     <!-- MAIN DASHBOARD GRID -->
@@ -211,8 +221,24 @@
         <!-- LEFT COLUMN -->
         <div class="left-col">
             
-            <div class="card" style="padding: 0; overflow: hidden;">
-                <iframe style="border-radius: 12px; display: block;" src="https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO12u33s?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" loading="lazy"></iframe>
+            <!-- CURRENT VIBE ALBUM (REPLACED SPOTIFY PLAYLIST) -->
+            <div class="card" style="padding: 15px; border-left: 3px solid var(--accent-birch);">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <img id="albumCover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300" alt="Album Cover" style="width: 85px; height: 85px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color);">
+                    <div style="flex: 1; overflow: hidden;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-birch); font-weight: 700;">CURRENT VIBE ALBUM</span>
+                        <h4 id="albumTitle" style="font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); margin-top: 2px;">D-DAY</h4>
+                        <p id="albumArtist" style="font-size: 0.85rem; color: var(--text-muted);">Agust D</p>
+                        <button class="open-btn" style="margin-top: 6px; font-size: 0.75rem;" onclick="toggleAlbumEdit()">Change Album ✎</button>
+                    </div>
+                </div>
+                
+                <div id="albumEditForm" style="display: none; margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 12px;">
+                    <input type="text" id="inputAlbumTitle" placeholder="Album Title (e.g. D-DAY / Indigo)">
+                    <input type="text" id="inputAlbumArtist" placeholder="Artist (e.g. Agust D / RM)">
+                    <input type="text" id="inputAlbumCover" placeholder="Cover Image URL...">
+                    <button class="btn" style="width: 100%; font-size: 0.85rem; padding: 6px;" onclick="saveAlbumVibe()">Save Vibe</button>
+                </div>
             </div>
 
             <!-- RESTORED BRAIN DUMP -->
@@ -307,7 +333,7 @@
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-life')">✕</button>
             <h2>🌲 Life Horizons & Master Goals</h2>
-            <div class="modal-quote">"Wherever you are right now, you’re just taking a break." — Suga</div>
+            <div class="modal-quote">"Wherever you are right now, you’re just taking a break." — Suga (D-2)</div>
             
             <h3>Personal & Creative Vision</h3>
             <textarea placeholder="Where do you see your creative self evolving this year?"></textarea>
@@ -317,12 +343,25 @@
         </div>
     </div>
 
+    <!-- UPGRADED LONG-TERM GOAL PLANNER -->
     <div class="modal-overlay" id="modal-long-term">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-long-term')">✕</button>
-            <h2>🔭 Long-Term Goal Breakdown</h2>
-            <div class="modal-quote">"Future’s gonna be okay." — Agust D</div>
-            <textarea placeholder="List major projects and break them into weekly steps here..."></textarea>
+            <h2>🔭 Long-Term Goal Planner</h2>
+            <div class="modal-quote">"Future’s gonna be okay." — Agust D (D-DAY)</div>
+            
+            <!-- ADD NEW PROJECT SECTION -->
+            <div style="background: var(--bg-obsidian); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <h3 style="color: var(--accent-moss); margin-bottom: 10px;">Add New Long-Term Project</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="newProjectTitle" placeholder="Project Name (e.g. Master Floor Plans & Interior Concept)..." style="margin-bottom: 0;">
+                    <button class="btn" onclick="addProject()">Create Project</button>
+                </div>
+            </div>
+
+            <div id="projectsList">
+                <!-- Dynamic Projects rendered here -->
+            </div>
         </div>
     </div>
 
@@ -343,10 +382,10 @@
                     </div>
                     <div id="surahList">
                         <!-- Example items -->
-                        <div class="quran-item needs-review"><span>Al-Kahf</span> 
+                        <div class="quran-item needs-review" style="display: flex; justify-content: space-between; align-items: center;"><span>Al-Kahf</span> 
                             <label><input type="checkbox" checked onchange="toggleReview(this)"> Needs Review</label>
                         </div>
-                        <div class="quran-item"><span>Juz Amma (30)</span> 
+                        <div class="quran-item" style="display: flex; justify-content: space-between; align-items: center;"><span>Juz Amma (30)</span> 
                             <label><input type="checkbox" onchange="toggleReview(this)"> Needs Review</label>
                         </div>
                     </div>
@@ -390,22 +429,71 @@
         </div>
     </div>
 
+    <!-- UPGRADED WORKOUT GENERATOR & TRACKER -->
     <div class="modal-overlay" id="modal-workout">
         <div class="modal-page">
             <button class="close-btn" onclick="closeModal('modal-workout')">✕</button>
-            <h2>🏋️ Workout & Physical Routine</h2>
-            <div class="modal-quote">"You are doing great, just keep going at your own pace." — Bang Chan</div>
-            <textarea placeholder="Track routines, sets, reps, and physical milestones here..."></textarea>
+            <h2>🏋️ Workout Generator & Log</h2>
+            <div class="modal-quote">"Clear water gets dirty if it stagnates; keep moving." — Arab Proverb</div>
+
+            <div class="two-col">
+                <!-- GENERATOR COLUMN -->
+                <div>
+                    <h3 style="color: var(--accent-moss); margin-bottom: 10px;">Daily Workout Generator</h3>
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Select Training Goal:</label>
+                    <select id="workoutGoalSelect" style="margin-top: 5px;">
+                        <option value="calisthenics">Calisthenics & Bodyweight Focus</option>
+                        <option value="dumbbell">Dumbbell Strength & Hypertrophy</option>
+                        <option value="cardio">Cardio & Core Conditioning</option>
+                        <option value="hybrid">Hybrid Full-Body Strength</option>
+                    </select>
+
+                    <button class="btn" style="width: 100%; margin-top: 5px; background: var(--accent-ember);" onclick="generateDailyWorkout()">Generate Routine ⚡</button>
+
+                    <div id="workoutOutput" style="margin-top: 15px;">
+                        <!-- Generated workout appears here -->
+                    </div>
+                </div>
+
+                <!-- HISTORY LOG COLUMN -->
+                <div style="background: var(--bg-obsidian); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <h3 style="color: var(--accent-birch); margin-bottom: 10px;">Workout History Log</h3>
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <input type="text" id="workoutLogInput" placeholder="Log details (e.g. Completed Calisthenics, 4 sets Pushups)..." style="margin-bottom: 0;">
+                        <button class="btn" onclick="saveWorkoutLog()">Log</button>
+                    </div>
+                    <div id="workoutHistoryList" style="font-size: 0.85rem; max-height: 250px; overflow-y: auto;">
+                        <!-- Workout logs load here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- JAVASCRIPT FOR LOGIC & LOCAL STORAGE -->
     <script>
+        // --- QUOTES POOL ---
+        const quotesPool = [
+            `"Seven times down, eight times up." — Proverb`,
+            `"Future’s gonna be okay." — Agust D (D-DAY)`,
+            `"Life is a struggle between the definition of yourself and the definition others give you." — RM (Indigo)`,
+            `"Wherever you are right now, you’re just taking a break." — Suga (D-2)`,
+            `"Clear water gets dirty if it stagnates; keep moving." — Arab Proverb`,
+            `"El que no arriesga, no gana." — Venezuelan Proverb`,
+            `"Even if you're not perfect, you're a limited edition." — RM`,
+            `"No darkness, no season can last forever." — BTS (Spring Day)`
+        ];
+        let currentQuoteIndex = 0;
+        function cycleQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotesPool.length;
+            document.getElementById('headerQuote').innerText = quotesPool[currentQuoteIndex];
+        }
+
         // --- LOGIN SYSTEM ---
         function handleLogin(e) { if(e.key === 'Enter') checkLogin(); }
         function checkLogin() {
             const pin = document.getElementById('passcodeInput').value;
-            if (pin === '0000' || pin === '') { // Set your own PIN logic here!
+            if (pin === '0000' || pin === '') { // Default PIN: 0000
                 document.getElementById('loginOverlay').style.opacity = '0';
                 setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 500);
             } else {
@@ -413,18 +501,51 @@
             }
         }
 
+        // --- ALBUM VIBE CARD ---
+        let defaultAlbum = {
+            title: 'D-DAY',
+            artist: 'Agust D',
+            cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300'
+        };
+        let albumVibe = JSON.parse(localStorage.getItem('myAlbumVibe')) || defaultAlbum;
+
+        function renderAlbumVibe() {
+            document.getElementById('albumTitle').innerText = albumVibe.title;
+            document.getElementById('albumArtist').innerText = albumVibe.artist;
+            document.getElementById('albumCover').src = albumVibe.cover;
+        }
+
+        function toggleAlbumEdit() {
+            const form = document.getElementById('albumEditForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function saveAlbumVibe() {
+            const t = document.getElementById('inputAlbumTitle').value.trim();
+            const a = document.getElementById('inputAlbumArtist').value.trim();
+            const c = document.getElementById('inputAlbumCover').value.trim();
+
+            if (t) albumVibe.title = t;
+            if (a) albumVibe.artist = a;
+            if (c) albumVibe.cover = c;
+
+            localStorage.setItem('myAlbumVibe', JSON.stringify(albumVibe));
+            renderAlbumVibe();
+            toggleAlbumEdit();
+        }
+
         // --- MODAL LOGIC ---
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // --- BRAIN DUMP (LOCAL STORAGE SAVING) ---
+        // --- BRAIN DUMP ---
         let brainDumps = JSON.parse(localStorage.getItem('myBrainDumps')) || [];
         
         function renderDumps() {
             const list = document.getElementById('dumpList');
             list.innerHTML = '';
             brainDumps.forEach((text, index) => {
-                list.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding: 4px 0;">
+                list.innerHTML += `<div style="display:flex; justify-space-between; border-bottom: 1px solid var(--border-color); padding: 4px 0;">
                     <span>• ${text}</span>
                     <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteDump(${index})">✕</button>
                 </div>`;
@@ -448,7 +569,7 @@
             renderDumps();
         }
 
-        // --- TASKS (LOCAL STORAGE SAVING) ---
+        // --- TASKS ---
         let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
 
         function renderTasks() {
@@ -456,7 +577,7 @@
             list.innerHTML = '';
             tasks.forEach((task, index) => {
                 list.innerHTML += `
-                <div class="task-card" style="${task.isImportant ? 'border-left-color: var(--accent-ember);' : ''}">
+                <div class="task-card" style="display:flex; justify-content:space-between; align-items:center; ${task.isImportant ? 'border-left-color: var(--accent-ember);' : ''}">
                     <div style="display: flex; flex-direction: column;">
                         <span style="font-weight: 500;">${task.title}</span>
                         <span style="font-size: 0.8rem; color: var(--text-muted);">${task.time || 'Unscheduled'}</span>
@@ -485,13 +606,194 @@
             renderTasks();
         }
 
+        // --- LONG-TERM GOAL PLANNER ---
+        let projects = JSON.parse(localStorage.getItem('myLongTermProjects')) || [
+            {
+                id: 1,
+                title: "Dream Studio & Interior Concept",
+                goals: [
+                    { id: 101, type: "monthly", text: "Finalize East Asian & North African moodboard", done: false },
+                    { id: 102, type: "weekly", text: "Draft initial floorplan grid & measurements", done: true }
+                ]
+            }
+        ];
+
+        function renderProjects() {
+            const container = document.getElementById('projectsList');
+            container.innerHTML = '';
+
+            projects.forEach((proj, pIndex) => {
+                let goalsHtml = '';
+                proj.goals.forEach((g, gIndex) => {
+                    goalsHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 6px 10px; border-radius: 4px; margin-top: 6px;">
+                        <label style="font-size: 0.85rem; text-decoration: ${g.done ? 'line-through' : 'none'}; color: ${g.done ? 'var(--text-muted)' : 'var(--text-main)'}">
+                            <input type="checkbox" ${g.done ? 'checked' : ''} onchange="toggleGoalDone(${pIndex}, ${gIndex})">
+                            <span style="font-size:0.75rem; color: var(--accent-birch); font-weight: bold; margin-left: 5px;">[${g.type.toUpperCase()}]</span> ${g.text}
+                        </label>
+                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteGoal(${pIndex}, ${gIndex})">✕</button>
+                    </div>`;
+                });
+
+                container.innerHTML += `
+                <div class="project-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="color: var(--accent-moss);">${proj.title}</h3>
+                        <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer; font-weight:bold;" onclick="deleteProject(${pIndex})">Delete Project ✕</button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 120px 1fr 80px; gap: 8px; margin-bottom: 10px;">
+                        <select id="goalType_${pIndex}" style="margin-bottom:0;">
+                            <option value="weekly">Weekly Goal</option>
+                            <option value="monthly">Monthly Goal</option>
+                        </select>
+                        <input type="text" id="goalInput_${pIndex}" placeholder="Add goal or milestone step..." style="margin-bottom:0;">
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.85rem;" onclick="addGoalToProject(${pIndex})">+ Add</button>
+                    </div>
+                    
+                    <div>${goalsHtml || '<p style="font-size: 0.8rem; color: var(--text-muted);">No goals added yet.</p>'}</div>
+                </div>`;
+            });
+        }
+
+        function addProject() {
+            const input = document.getElementById('newProjectTitle');
+            if(!input.value.trim()) return;
+            projects.push({
+                id: Date.now(),
+                title: input.value.trim(),
+                goals: []
+            });
+            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
+            input.value = '';
+            renderProjects();
+        }
+
+        function deleteProject(pIndex) {
+            projects.splice(pIndex, 1);
+            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
+            renderProjects();
+        }
+
+        function addGoalToProject(pIndex) {
+            const type = document.getElementById(`goalType_${pIndex}`).value;
+            const input = document.getElementById(`goalInput_${pIndex}`);
+            if (!input.value.trim()) return;
+
+            projects[pIndex].goals.push({
+                id: Date.now(),
+                type: type,
+                text: input.value.trim(),
+                done: false
+            });
+            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
+            renderProjects();
+        }
+
+        function toggleGoalDone(pIndex, gIndex) {
+            projects[pIndex].goals[gIndex].done = !projects[pIndex].goals[gIndex].done;
+            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
+            renderProjects();
+        }
+
+        function deleteGoal(pIndex, gIndex) {
+            projects[pIndex].goals.splice(gIndex, 1);
+            localStorage.setItem('myLongTermProjects', JSON.stringify(projects));
+            renderProjects();
+        }
+
+        // --- WORKOUT GENERATOR & TRACKER ---
+        const workoutDatabase = {
+            calisthenics: [
+                { name: "Push-ups", sets: 4, reps: "12 - 15 reps", rest: "60s" },
+                { name: "Bodyweight Squats / Pistol Progressions", sets: 4, reps: "15 reps", rest: "60s" },
+                { name: "Inverted Rows or Pull-ups", sets: 3, reps: "8 - 10 reps", rest: "90s" },
+                { name: "Plank Hold", sets: 3, reps: "45 - 60 secs", rest: "45s" },
+                { name: "Mountain Climbers", sets: 3, reps: "30 secs", rest: "30s" }
+            ],
+            dumbbell: [
+                { name: "Dumbbell Goblet Squats", sets: 4, reps: "10 - 12 reps", rest: "90s" },
+                { name: "Dumbbell Romanian Deadlifts", sets: 3, reps: "12 reps", rest: "75s" },
+                { name: "Dumbbell Overhead Press", sets: 3, reps: "10 reps", rest: "75s" },
+                { name: "Single-Arm Dumbbell Rows", sets: 3, reps: "12 reps/side", rest: "60s" },
+                { name: "Dumbbell Floor Press", sets: 4, reps: "10 - 12 reps", rest: "90s" }
+            ],
+            cardio: [
+                { name: "Jump Rope / High-Knee Jog", sets: 3, reps: "3 minutes nonstop", rest: "60s" },
+                { name: "Bicycle Crunches", sets: 3, reps: "20 reps/side", rest: "45s" },
+                { name: "Burpees", sets: 3, reps: "10 - 12 reps", rest: "60s" },
+                { name: "Russian Twists", sets: 3, reps: "30 total reps", rest: "45s" },
+                { name: "Steady-State Zone 2 Jog or Cycle", sets: 1, reps: "20 minutes", rest: "N/A" }
+            ],
+            hybrid: [
+                { name: "Dumbbell Thrusters (Squat to Press)", sets: 3, reps: "10 reps", rest: "90s" },
+                { name: "Push-up to Renegade Row", sets: 3, reps: "8 reps/side", rest: "75s" },
+                { name: "Walking Lunges with Dumbbells", sets: 3, reps: "12 steps/leg", rest: "60s" },
+                { name: "Dumbbell Swings", sets: 3, reps: "15 reps", rest: "60s" },
+                { name: "Plank-to-Pushup Transitions", sets: 3, reps: "10 reps", rest: "45s" }
+            ]
+        };
+
+        let workoutLogs = JSON.parse(localStorage.getItem('myWorkoutLogs')) || [];
+
+        function generateDailyWorkout() {
+            const goal = document.getElementById('workoutGoalSelect').value;
+            const exercises = workoutDatabase[goal];
+            const output = document.getElementById('workoutOutput');
+
+            let html = `<div style="background: var(--bg-obsidian); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                <h4 style="color: var(--accent-birch); margin-bottom: 8px;">Generated Plan:</h4>`;
+
+            exercises.forEach(ex => {
+                html += `
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px dashed var(--border-color); padding: 6px 0;">
+                    <span style="font-weight: 600; color: var(--text-main);">${ex.name}</span>
+                    <span style="color: var(--accent-moss);">${ex.sets} sets × ${ex.reps} (${ex.rest} rest)</span>
+                </div>`;
+            });
+
+            html += `</div>`;
+            output.innerHTML = html;
+        }
+
+        function renderWorkoutLogs() {
+            const container = document.getElementById('workoutHistoryList');
+            container.innerHTML = '';
+            workoutLogs.forEach((log, index) => {
+                container.innerHTML += `
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 6px 0;">
+                    <div>
+                        <span style="color: var(--accent-moss); font-size: 0.75rem; display: block;">${log.date}</span>
+                        <span style="color: var(--text-main);">${log.text}</span>
+                    </div>
+                    <button style="background:none; border:none; color:var(--accent-ember); cursor:pointer;" onclick="deleteWorkoutLog(${index})">✕</button>
+                </div>`;
+            });
+        }
+
+        function saveWorkoutLog() {
+            const input = document.getElementById('workoutLogInput');
+            if(!input.value.trim()) return;
+            const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            workoutLogs.unshift({ date: now, text: input.value.trim() });
+            localStorage.setItem('myWorkoutLogs', JSON.stringify(workoutLogs));
+            input.value = '';
+            renderWorkoutLogs();
+        }
+
+        function deleteWorkoutLog(index) {
+            workoutLogs.splice(index, 1);
+            localStorage.setItem('myWorkoutLogs', JSON.stringify(workoutLogs));
+            renderWorkoutLogs();
+        }
+
         // --- QURAN GENERATOR ---
         function addSurah() {
             const val = document.getElementById('surahInput').value;
             if(!val) return;
             const list = document.getElementById('surahList');
             list.innerHTML += `
-                <div class="quran-item"><span>${val}</span> 
+                <div class="quran-item" style="display: flex; justify-content: space-between; align-items: center;"><span>${val}</span> 
                     <label><input type="checkbox" onchange="toggleReview(this)"> Needs Review</label>
                 </div>`;
             document.getElementById('surahInput').value = '';
@@ -514,7 +816,6 @@
                 return;
             }
 
-            // Shuffle and pick up to 2
             reviewArray.sort(() => 0.5 - Math.random());
             let picked = reviewArray.slice(0, 2);
             
@@ -522,7 +823,7 @@
         }
 
         // --- DYNAMIC FULL YEAR CALENDAR ---
-        let currDate = new Date(); // Gets today's exact date
+        let currDate = new Date();
 
         function renderCalendar() {
             const monthYearText = document.getElementById('calMonthYear');
@@ -540,12 +841,10 @@
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             monthYearText.innerText = `${monthNames[month]} ${year}`;
 
-            // Blank spaces for days before the 1st
             for (let i = 0; i < firstDay; i++) {
                 grid.innerHTML += `<div class="cal-cell empty"></div>`;
             }
 
-            // Real dates
             let today = new Date();
             for (let i = 1; i <= daysInMonth; i++) {
                 let isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) ? 'today' : '';
@@ -560,9 +859,12 @@
 
         // Initialize Everything on Page Load
         window.onload = () => {
+            renderAlbumVibe();
             renderDumps();
             renderTasks();
             renderCalendar();
+            renderProjects();
+            renderWorkoutLogs();
         };
     </script>
 </body>
