@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexFit | Generator, Guide & Diet Hub</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-orange: #f97316;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.5; padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        header h1 { font-size: 2rem; color: var(--accent-green); }
+        header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .tab-btn.active, .tab-btn:hover { background: var(--accent-green); color: #000; border-color: var(--accent-green); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent-blue); display: flex; justify-content: space-between; align-items: center; }
+
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+        select, input, textarea { width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.95rem; }
+        select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent-green); }
+
+        .btn { background: var(--accent-blue); color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-orange { background: var(--accent-orange); }
+
+        /* EXERCISE ITEM CARD */
+        .ex-card { background: var(--bg-dark); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-green); padding: 12px 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .ex-info h4 { font-size: 1rem; color: var(--text-main); }
+        .ex-info p { font-size: 0.8rem; color: var(--text-muted); }
+        .info-btn { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .info-btn:hover { background: var(--accent-blue); color: white; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--accent-orange); font-size: 1.5rem; cursor: pointer; }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin: 15px 0; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        .alert-box { background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--accent-orange); padding: 10px 15px; border-radius: 4px; font-size: 0.85rem; color: #fdba74; margin: 10px 0; }
+        .tip-box { background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 10px 15px; border-radius: 4px; font-size: 0.85rem; color: #a7f3d0; margin: 10px 0; }
+
+        /* LOG TABLE */
+        .log-list { list-style: none; }
+        .log-item { background: var(--bg-dark); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ApexFit Studio</h1>
+        <p>Custom Workout Generator, Form Guides & Dynamic Diet Blueprints</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('generatorTab', this)">Workout Generator</button>
+        <button class="tab-btn" onclick="switchTab('loggerTab', this)">Workout Log</button>
+        <button class="tab-btn" onclick="switchTab('dietTab', this)">Goals & Diet Advisor</button>
+    </div>
+
+    <!-- TAB 1: WORKOUT GENERATOR -->
+    <div id="generatorTab" class="tab-content active">
+        <div class="grid-layout">
+            <div class="card">
+                <div class="card-title">1. Select Target Focus</div>
+                <label>Training Modality / Target Goal</label>
+                <select id="modalitySelect">
+                    <option value="calisthenics">Calisthenics (Bodyweight Master)</option>
+                    <option value="bowflex">Classic Retro Bowflex (Power Rods)</option>
+                    <option value="core">Abs & Core Conditioning</option>
+                    <option value="cardio">Cardio & Stamina Builder</option>
+                    <option value="upper">Upper Body Hypertrophy</option>
+                    <option value="lower">Lower Body Strength & Power</option>
+                </select>
+
+                <label>Difficulty / Experience Level</label>
+                <select id="levelSelect">
+                    <option value="beginner">Beginner (Form & Base)</option>
+                    <option value="intermediate">Intermediate (Strength & Volume)</option>
+                </select>
+
+                <button class="btn" onclick="generateRoutine()">Generate Routine ⚡</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>2. Generated Routine</span>
+                    <span id="routineLabel" style="font-size: 0.8rem; color: var(--accent-green);"></span>
+                </div>
+                <div id="routineContainer">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Select a modality and click generate to build your target routine.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: WORKOUT LOG -->
+    <div id="loggerTab" class="tab-content">
+        <div class="grid-layout">
+            <div class="card">
+                <div class="card-title">Log Completed Exercise</div>
+                <label>Exercise Name</label>
+                <input type="text" id="logName" placeholder="e.g. Bowflex Chest Press, Pullups...">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>Sets</label>
+                        <input type="number" id="logSets" placeholder="3">
+                    </div>
+                    <div>
+                        <label>Reps / Time</label>
+                        <input type="text" id="logReps" placeholder="12 reps or 45s">
+                    </div>
+                </div>
+
+                <label>Resistance / Weight (Optional)</label>
+                <input type="text" id="logWeight" placeholder="e.g. 70 lbs Power Rod / Bodyweight">
+
+                <button class="btn btn-orange" onclick="saveLog()">Save Workout Log 💾</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">History Log</div>
+                <div id="logContainer">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">No workout entries logged yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: GOALS & DIET ADVISOR -->
+    <div id="dietTab" class="tab-content">
+        <div class="grid-layout">
+            <div class="card">
+                <div class="card-title">Target Goal & Diet Generator</div>
+                <label>Select Primary Goal</label>
+                <select id="dietGoalSelect">
+                    <option value="abs">Get Visible Abs & Tight Core</option>
+                    <option value="loseWeight">Weight Loss & Fat Reduction</option>
+                    <option value="cardioStamina">Build Cardio Stamina & Endurance</option>
+                    <option value="buildMuscle">Build Lean Muscle Mass</option>
+                    <option value="lowerBody">Tone & Strengthen Lower Body</option>
+                </select>
+
+                <button class="btn" onclick="generateDietAdvice()">Get Goal Strategy & Diet Blueprint 🥗</button>
+            </div>
+
+            <div class="card" style="grid-column: span 1;">
+                <div class="card-title" id="dietTitle">Strategy Overview</div>
+                <div id="dietContainer">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Select your goal to generate tailored exercise strategy and nutrition rules.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXERCISE GUIDE MODAL -->
+    <div class="modal-overlay" id="exerciseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h2 id="modalTitle" style="color: var(--accent-green); margin-bottom: 5px;">Exercise Name</h2>
+            <p id="modalCategory" style="color: var(--accent-orange); font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;"></p>
+            
+            <div class="video-container">
+                <iframe id="modalVideo" src="" allowfullscreen></iframe>
+            </div>
+
+            <h4 style="color: var(--accent-blue); margin-top: 15px;">Step-by-Step Instructions</h4>
+            <ol id="modalSteps" style="padding-left: 20px; font-size: 0.9rem; color: var(--text-main); margin-bottom: 15px;"></ol>
+
+            <div class="alert-box">
+                <strong>⚠️ Safety Warning & Form Check:</strong>
+                <p id="modalWarning" style="margin-top: 4px;"></p>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Pro Tip for Maximum Results:</strong>
+                <p id="modalTip" style="margin-top: 4px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- EXERCISE DATABASE ---
+        const exerciseDB = {
+            // RETRO BOWFLEX
+            bowflexPress: {
+                name: "Retro Bowflex Chest Press",
+                category: "Bowflex / Upper Body",
+                sets: "3 Sets x 10-12 Reps",
+                video: "https://www.youtube.com/embed/eGo4IYlb85g",
+                steps: [
+                    "Sit facing away from the Bowflex machine with hand grips in each hand.",
+                    "Keep wrists straight and chest lifted.",
+                    "Press handles straight out until arms are extended without locking elbows.",
+                    "Slowly return to starting position, maintaining constant tension on the power rods."
+                ],
+                warning: "Do not let the power rods snap back quickly. Maintain controlled tempo both outward and inward.",
+                tip: "Squeeze your chest at full extension for 1 second before slowly lowering."
+            },
+            bowflexLat: {
+                name: "Bowflex Seated Lat Rows",
+                category: "Bowflex / Back",
+                sets: "3 Sets x 12 Reps",
+                video: "https://www.youtube.com/embed/GZbfZ033fBo",
+                steps: [
+                    "Sit facing the Bowflex power rods, feet firmly planted on ground or frame.",
+                    "Grasp handles with arms fully extended.",
+                    "Pull handles toward your abdomen, driving elbows backwards.",
+                    "Squeeze shoulder blades together at the back of the movement."
+                ],
+                warning: "Avoid swinging your lower back to pull heavier resistance.",
+                tip: "Focus on pulling with your upper back muscles rather than pulling through your biceps."
+            },
+            
+            // CALISTHENICS
+            declinePushup: {
+                name: "Decline Calisthenics Pushups",
+                category: "Calisthenics / Upper Body",
+                sets: "4 Sets x 12-15 Reps",
+                video: "https://www.youtube.com/embed/SKPab2YC8BE",
+                steps: [
+                    "Place feet up on a bench or sturdy chair and hands flat on the floor wider than shoulders.",
+                    "Keep core tightly braced in a solid plank posture.",
+                    "Lower chest toward the ground until arms form a 90-degree angle.",
+                    "Push explosively back to starting position."
+                ],
+                warning: "Prevent hips from sagging toward the ground to avoid lower back strain.",
+                tip: "Squeeze glutes and abs tight throughout the movement."
+            },
+            pullups: {
+                name: "Bodyweight Pullups",
+                category: "Calisthenics / Upper Body",
+                sets: "3 Sets x Max Reps",
+                video: "https://www.youtube.com/embed/eGo4IYlb85g",
+                steps: [
+                    "Grip pullup bar with palms facing away, slightly wider than shoulder-width.",
+                    "Hang with arms straight and retract shoulder blades.",
+                    "Pull your body upward until chin clears the bar.",
+                    "Lower down under complete control."
+                ],
+                warning: "Avoid kicking legs or swinging (kipping) if training for pure strength.",
+                tip: "Think about driving elbows down toward your hip pockets."
+            },
+
+            // CORE & ABS
+            hangingLegRaise: {
+                name: "Hanging / Captains Chair Leg Raises",
+                category: "Core & Abs",
+                sets: "3 Sets x 15 Reps",
+                video: "https://www.youtube.com/embed/hdng3Nm1x_E",
+                steps: [
+                    "Hang from a bar or position forearms on a captain's chair station.",
+                    "Keep legs extended or slightly bent at knees.",
+                    "Raise legs upward using core until hips flex to 90 degrees.",
+                    "Lower legs slowly back down without swinging."
+                ],
+                warning: "Do not rely on momentum. If swinging occurs, reset at the bottom of each rep.",
+                tip: "Curl your pelvis slightly upward at the top to fully engage lower rectus abdominis."
+            },
+            plankReach: {
+                name: "Forearm Plank with Arm Reach",
+                category: "Core & Abs",
+                sets: "3 Sets x 45 Seconds",
+                video: "https://www.youtube.com/embed/pSHjTRCQxIw",
+                steps: [
+                    "Get into forearm plank position with elbows under shoulders.",
+                    "Brace core tightly, keeping hips level.",
+                    "Slowly extend one arm forward, hold 1 sec, then return.",
+                    "Alternate arms while keeping hips completely still."
+                ],
+                warning: "Avoid rotating hips side to side as you reach arm out.",
+                tip: "Widen your foot stance slightly for improved anti-rotational stability."
+            },
+
+            // CARDIO
+            burpees: {
+                name: "High Intensity Burpees",
+                category: "Cardio & Stamina",
+                sets: "4 Rounds x 45 Seconds On / 15s Rest",
+                video: "https://www.youtube.com/embed/auBLPXO8F6U",
+                steps: [
+                    "Stand feet shoulder-width, drop quickly into a squat placing hands on floor.",
+                    "Jump feet back into pushup position.",
+                    "Perform a quick pushup, jump feet back under chest.",
+                    "Explode vertically jumping into the air with hands overhead."
+                ],
+                warning: "Pace yourself; going 100% in the first 10 seconds causes early burnout.",
+                tip: "Land softly on the balls of your feet to protect your knees."
+            },
+
+            // LOWER BODY
+            gobletSquat: {
+                name: "Deep Goblet Squats / Bodyweight Squats",
+                category: "Lower Body",
+                sets: "4 Sets x 15 Reps",
+                video: "https://www.youtube.com/embed/MeIiIdhvKL4",
+                steps: [
+                    "Stand with feet slightly wider than hip-width, toes turned out 15 degrees.",
+                    "Sit hips back and down like sitting into a low chair.",
+                    "Lower until thighs break parallel with the floor.",
+                    "Drive through whole foot to stand tall."
+                ],
+                warning: "Ensure knees track in line with toes; do not let knees collapse inward.",
+                tip: "Keep chest lifted throughout the movement."
+            }
+        };
+
+        // --- ROUTINE GENERATOR MAPPINGS ---
+        const routineTemplates = {
+            bowflex: ['bowflexPress', 'bowflexLat', 'gobletSquat', 'hangingLegRaise'],
+            calisthenics: ['declinePushup', 'pullups', 'gobletSquat', 'plankReach'],
+            core: ['hangingLegRaise', 'plankReach', 'declinePushup'],
+            cardio: ['burpees', 'plankReach', 'declinePushup'],
+            upper: ['bowflexPress', 'pullups', 'declinePushup', 'bowflexLat'],
+            lower: ['gobletSquat', 'burpees', 'hangingLegRaise']
+        };
+
+        function generateRoutine() {
+            const modality = document.getElementById('modalitySelect').value;
+            const keys = routineTemplates[modality] || routineTemplates.calisthenics;
+            const container = document.getElementById('routineContainer');
+            
+            document.getElementById('routineLabel').innerText = modality.toUpperCase();
+            container.innerHTML = '';
+
+            keys.forEach(key => {
+                const item = exerciseDB[key];
+                if (!item) return;
+
+                container.innerHTML += `
+                    <div class="ex-card">
+                        <div class="ex-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.sets} • <span style="color:var(--accent-orange);">${item.category}</span></p>
+                        </div>
+                        <button class="info-btn" onclick="openModal('${key}')">How-To & Video ↗</button>
+                    </div>
+                `;
+            });
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(key) {
+            const ex = exerciseDB[key];
+            if (!ex) return;
+
+            document.getElementById('modalTitle').innerText = ex.name;
+            document.getElementById('modalCategory').innerText = ex.category.toUpperCase();
+            document.getElementById('modalVideo').src = ex.video;
+            document.getElementById('modalWarning').innerText = ex.warning;
+            document.getElementById('modalTip').innerText = ex.tip;
+
+            const stepsContainer = document.getElementById('modalSteps');
+            stepsContainer.innerHTML = '';
+            ex.steps.forEach(step => {
+                stepsContainer.innerHTML += `<li>${step}</li>`;
+            });
+
+            document.getElementById('exerciseModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('exerciseModal').classList.remove('active');
+            document.getElementById('modalVideo').src = ''; // stop video on close
+        }
+
+        // --- WORKOUT LOGIC ---
+        let logs = JSON.parse(localStorage.getItem('apexWorkoutLogs')) || [];
+
+        function renderLogs() {
+            const container = document.getElementById('logContainer');
+            if (logs.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No workout entries logged yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            logs.forEach((log, idx) => {
+                container.innerHTML += `
+                    <div class="log-item">
+                        <div>
+                            <strong>${log.name}</strong> <span style="color:var(--text-muted);">(${log.date})</span>
+                            <div style="font-size:0.8rem; color:var(--accent-green);">${log.sets} sets x ${log.reps} | ${log.weight || 'No Weight'}</div>
+                        </div>
+                        <button style="background:none; border:none; color:var(--accent-orange); cursor:pointer;" onclick="deleteLog(${idx})">✕</button>
+                    </div>
+                `;
+            });
+        }
+
+        function saveLog() {
+            const name = document.getElementById('logName').value.trim();
+            const sets = document.getElementById('logSets').value.trim();
+            const reps = document.getElementById('logReps').value.trim();
+            const weight = document.getElementById('logWeight').value.trim();
+
+            if (!name || !sets || !reps) {
+                alert('Please fill in Exercise Name, Sets, and Reps!');
+                return;
+            }
+
+            const newLog = {
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                name: name,
+                sets: sets,
+                reps: reps,
+                weight: weight
+            };
+
+            logs.unshift(newLog);
+            localStorage.setItem('apexWorkoutLogs', JSON.stringify(logs));
+            
+            document.getElementById('logName').value = '';
+            document.getElementById('logSets').value = '';
+            document.getElementById('logReps').value = '';
+            document.getElementById('logWeight').value = '';
+
+            renderLogs();
+        }
+
+        function deleteLog(idx) {
+            logs.splice(idx, 1);
+            localStorage.setItem('apexWorkoutLogs', JSON.stringify(logs));
+            renderLogs();
+        }
+
+        // --- GOAL & DIET ADVISOR LOGIC ---
+        const dietDatabase = {
+            abs: {
+                title: "Strategy: Visible Abs & Core Definition",
+                advice: "Abs are built in the gym but revealed in the kitchen. Combine anti-rotational core training (planks, leg raises) with a slight caloric deficit.",
+                diet: [
+                    "<strong>Caloric Target:</strong> 300-500 calorie daily deficit.",
+                    "<strong>Protein:</strong> 1.0g per lb of bodyweight to preserve muscle mass.",
+                    "<strong>Key Foods:</strong> Egg whites, chicken breast, white fish, leafy greens, berries.",
+                    "<strong>Pro Tip:</strong> Limit high-sodium sauces and liquid calories to reduce bloating."
+                ]
+            },
+            loseWeight: {
+                title: "Strategy: Weight Loss & Fat Burning",
+                advice: "Prioritize consistent movement, compound resistance training (to keep metabolism high), and high-satiety low-calorie food sources.",
+                diet: [
+                    "<strong>Caloric Target:</strong> Moderate 500 calorie deficit.",
+                    "<strong>Protein:</strong> High protein (40% of daily calories) to keep hunger away.",
+                    "<strong>Key Foods:</strong> Vegetables (broccoli, spinach), lean meats, whole eggs, oats.",
+                    "<strong>Pro Tip:</strong> Drink 500ml water before every meal to increase fullness."
+                ]
+            },
+            cardioStamina: {
+                title: "Strategy: Stamina & Endurance Optimization",
+                advice: "Focus on cardiovascular efficiency, steady-state sessions mixed with HIIT, and adequate carbohydrate intake for glycogen replenishment.",
+                diet: [
+                    "<strong>Caloric Target:</strong> Maintenance or slight surplus depending on training volume.",
+                    "<strong>Carbohydrates:</strong> 50% of total calories (complex carbs pre-workout).",
+                    "<strong>Key Foods:</strong> Sweet potatoes, brown rice, bananas, oats, lean beef.",
+                    "<strong>Pro Tip:</strong> Hydrate with added electrolytes during long cardio sessions."
+                ]
+            },
+            buildMuscle: {
+                title: "Strategy: Muscle Growth & Hypertrophy",
+                advice: "Consistently apply progressive overload in your workouts. Take exercises near failure while maintaining pristine form.",
+                diet: [
+                    "<strong>Caloric Target:</strong> 250-400 calorie surplus.",
+                    "<strong>Protein:</strong> 1.0g - 1.2g per lb of bodyweight.",
+                    "<strong>Key Foods:</strong> Whole eggs, salmon, steak, rice, peanut butter, Greek yogurt.",
+                    "<strong>Pro Tip:</strong> Consume 30g protein within 1-2 hours after workout."
+                ]
+            },
+            lowerBody: {
+                title: "Strategy: Lower Body Power & Toning",
+                advice: "Train legs 2x per week focusing on knee-dominant (squats) and hip-dominant (deadlifts, glute bridges) movements.",
+                diet: [
+                    "<strong>Caloric Target:</strong> Maintenance or slight surplus.",
+                    "<strong>Hydration:</strong> High water intake to aid muscle recovery in large muscle groups.",
+                    "<strong>Key Foods:</strong> Quinoa, turkey breast, cottage cheese, avocado, almonds.",
+                    "<strong>Pro Tip:</strong> Ensure proper magnesium and potassium intake to prevent cramping."
+                ]
+            }
+        };
+
+        function generateDietAdvice() {
+            const goal = document.getElementById('dietGoalSelect').value;
+            const data = dietDatabase[goal] || dietDatabase.abs;
+
+            document.getElementById('dietTitle').innerText = data.title;
+            
+            let listItems = data.diet.map(item => `<li style="margin-bottom:8px;">${item}</li>`).join('');
+
+            document.getElementById('dietContainer').innerHTML = `
+                <div style="background:var(--bg-dark); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:15px;">
+                    <h4 style="color:var(--accent-blue); margin-bottom:5px;">Training Rule</h4>
+                    <p style="font-size:0.9rem; color:var(--text-main);">${data.advice}</p>
+                </div>
+                <h4 style="color:var(--accent-green); margin-bottom:10px;">Diet Blueprint</h4>
+                <ul style="padding-left:20px; font-size:0.9rem; color:var(--text-main);">
+                    ${listItems}
+                </ul>
+            `;
+        }
+
+        // --- TAB SWITCHER ---
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // INITIAL LOAD
+        window.onload = function() {
+            generateRoutine();
+            renderLogs();
+            generateDietAdvice();
+        };
+    </script>
+</body>
+</html>
